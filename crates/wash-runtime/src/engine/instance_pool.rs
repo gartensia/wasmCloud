@@ -68,14 +68,14 @@ pub(crate) fn poolable(
     linked: &HashSet<Arc<str>>,
 ) -> Option<Arc<InstancePool>> {
     let pool = Arc::clone(&components.get(component_id)?.instances);
-    if !pool.enabled() {
+    if !pool.warms_instances() {
         return None;
     }
     for linked_id in linked {
-        let linked_enabled = components
+        let linked_warms = components
             .get(linked_id)
-            .is_some_and(|c| c.instances.enabled());
-        if !linked_enabled {
+            .is_some_and(|c| c.instances.warms_instances());
+        if !linked_warms {
             tracing::debug!(
                 component_id,
                 linked_id = linked_id.as_ref(),
@@ -110,10 +110,13 @@ pub(crate) struct ComponentInstance {
 
 /// What a component asked for by way of instance reuse.
 ///
-/// `Component.pool_size` and `Component.max_invocations` arrive as `sint32`
-/// and carry two sentinels between them — negative for "the sender did not
-/// configure this" and zero for "no limit" — so they are decoded into this
-/// once, at the edge, rather than being re-interpreted at each use.
+/// The limits arrive as `sint32`, signed all the way from the Kubernetes CRD
+/// a workload sets them through, and carry two sentinels between them —
+/// negative for "the sender did not configure this" and zero for "no limit" —
+/// so they are decoded into this once, at the edge, rather than being
+/// re-interpreted at each use. Past this point the limits are `NonZeroUsize`
+/// and the unset cases have names, so nothing downstream sees a signed
+/// integer or has to decide what a negative one means.
 /// Non-exhaustive in both directions on purpose: the limits a component can
 /// state are expected to grow (how many calls one warm instance may serve at
 /// once is next), and neither adding a variant nor adding a field to one
@@ -229,12 +232,13 @@ impl InstancePool {
         drivers.retain(|d| !(d.is_gone() || d.is_retired() && d.in_flight() == 0));
 
         // Least-busy first: spread calls rather than filling one instance, so
-        // a trap takes down as little as possible.
-        let mut candidates: Vec<Arc<InstanceDriver>> = drivers.iter().map(Arc::clone).collect();
-        candidates.sort_by_key(|d| d.in_flight());
+        // a trap takes down as little as possible. Sorted in place, since the
+        // pool's order carries no meaning and leaving it sorted is what keeps
+        // the next offer's sort near-linear.
+        drivers.sort_by_key(|d| d.in_flight());
 
         let mut job = job;
-        for driver in &candidates {
+        for driver in drivers.iter() {
             match driver.try_send(job) {
                 Ok(()) => return Dispatch::Sent,
                 Err(returned) => job = returned,
@@ -282,7 +286,7 @@ impl InstancePool {
     }
 
     /// Whether this component keeps instances warm at all.
-    pub(crate) fn enabled(&self) -> bool {
+    pub(crate) fn warms_instances(&self) -> bool {
         self.policy.keeps_instances_warm()
     }
 

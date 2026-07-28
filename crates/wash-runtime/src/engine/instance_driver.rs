@@ -142,6 +142,12 @@ impl AccessorTask<SharedCtx> for LinkedTask {
             // state; a trap will also fault the whole driver, but retiring
             // here covers the errors that do not.
             Ok(Err(e)) => {
+                tracing::warn!(
+                    err = ?e,
+                    %import_name,
+                    %export_name,
+                    "pooled call failed in the host; retiring the instance"
+                );
                 self.slot.retire_instance();
                 Err(e)
             }
@@ -150,6 +156,12 @@ impl AccessorTask<SharedCtx> for LinkedTask {
             // is what ends it: the driver stops admitting, drains, is reaped,
             // and the store's teardown takes the stalled work with it.
             Err(e) => {
+                tracing::warn!(
+                    %import_name,
+                    %export_name,
+                    timeout = ?call_timeout,
+                    "pooled call timed out; retiring the instance to end the stalled guest work"
+                );
                 self.slot.retire_instance();
                 Err(wasmtime::format_err!(
                     "function call timed out after {call_timeout:?}: {e}"

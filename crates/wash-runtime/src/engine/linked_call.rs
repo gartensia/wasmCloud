@@ -22,7 +22,7 @@ use std::sync::Arc;
 
 use tokio::sync::RwLock;
 use tokio::time::timeout;
-use tracing::trace;
+use tracing::{debug, trace};
 use wasmtime::component::{
     Accessor, ComponentExportIndex, InstancePre, Val,
     types::{ComponentFunc, Type},
@@ -697,9 +697,9 @@ async fn invoke_ephemeral_plain(
             // The pool has room. Build the store out here, where awaiting is
             // allowed, and hand it over.
             Dispatch::NeedsInstance(job) => {
-                let store = new_ephemeral_store(ephemeral_call)
-                    .await
-                    .map_err(|e| wasmtime::format_err!("{e:#}"))?;
+                let store = new_ephemeral_store(ephemeral_call).await.map_err(|e| {
+                    wasmtime::format_err!("new pooled store creation failed: {e:#}")
+                })?;
                 pool.install(store, inv.pre.clone(), job)
             }
             Dispatch::Saturated(job) => Err(job),
@@ -719,13 +719,19 @@ async fn invoke_ephemeral_plain(
                 return Ok(());
             }
             // Every warm instance was busy; run it in a store of its own.
-            Err(_declined) => {}
+            Err(_declined) => {
+                debug!(
+                    name = %inv.import_name,
+                    fn_name = %inv.export_name,
+                    "warm instances saturated; serving this call from a store of its own"
+                );
+            }
         }
     }
 
     let mut store = new_ephemeral_store(ephemeral_call)
         .await
-        .map_err(|e| wasmtime::format_err!("{e:#}"))?;
+        .map_err(|e| wasmtime::format_err!("new ephemeral store creation failed: {e:#}"))?;
     let instance = inv.pre.instantiate_async(&mut store).await?;
 
     let params_buf = params.to_vec();
