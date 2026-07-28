@@ -333,6 +333,7 @@ func (r *WorkloadReconciler) reconcilePlacement(ctx context.Context, workload *r
 			ImagePullPolicy: translatePullPolicy(c.ImagePullPolicy),
 			PoolSize:        c.PoolSize,
 			MaxInvocations:  c.MaxInvocations,
+			MaxConcurrency:  c.MaxConcurrency,
 			LocalResources:  localResources,
 		})
 	}
