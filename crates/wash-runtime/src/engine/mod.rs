@@ -519,6 +519,7 @@ impl Engine {
             namespace,
             name,
             components,
+            compiled_components,
             service,
             volumes,
             host_interfaces,
@@ -581,12 +582,17 @@ impl Engine {
 
         // Initialize all components
         let mut workload_components = Vec::new();
-        for component in components.into_iter() {
+        for (component, compiled) in components
+            .into_iter()
+            .map(|c| (c, false))
+            .chain(compiled_components.into_iter().map(|c| (c, true)))
+        {
             match self.initialize_workload_component(
                 id.as_ref(),
                 &name,
                 &namespace,
                 component,
+                compiled,
                 &validated_volumes,
                 Arc::clone(&loopback),
             ) {
@@ -739,6 +745,45 @@ impl Engine {
         }
     }
 
+    /// Load a WebAssembly component from raw bytes or yields a previously compiled one.
+    #[instrument(name = "load_compiled_component_bytes", skip_all, fields(digest = %digest.as_ref().map(|d| d.as_ref()).unwrap_or("none")))]
+    #[allow(unsafe_code)]
+    fn load_compiled_component_bytes(
+        &self,
+        bytes: impl AsRef<[u8]>,
+        digest: Option<impl AsRef<str>>,
+    ) -> anyhow::Result<Component> {
+        match digest {
+            None => {
+                tracing::debug!("no digest provided, compiling component without caching");
+
+                let component = unsafe { Component::deserialize(&self.inner, bytes.as_ref()) }
+                    .map_err(anyhow::Error::from)
+                    .context("failed to compile component from bytes")?;
+
+                Ok(component)
+            }
+
+            Some(digest) => {
+                let key = CacheKey(digest.as_ref().to_string());
+                let inner = &self.inner;
+                let bytes_ref = bytes.as_ref();
+
+                self.cache
+                    .try_get_with(key, || unsafe {
+                        Component::deserialize(inner, bytes_ref)
+                            .map_err(anyhow::Error::from)
+                            .context("failed to compile component from bytes")
+                            .map(CacheValue)
+                    })
+                    .map_err(|e: Arc<anyhow::Error>| {
+                        anyhow::anyhow!(e).context("compilation cache error")
+                    })
+                    .map(|v| v.0)
+            }
+        }
+    }
+
     /// Initialize a component that is a part of a workload, add wasi@0.2 interfaces (and
     /// wasi:http if the `http` feature is enabled) to the linker.
     #[instrument(name = "initialize_workload_component", skip_all, fields(component.name = %component.name))]
@@ -748,6 +793,7 @@ impl Engine {
         workload_name: impl AsRef<str>,
         workload_namespace: impl AsRef<str>,
         component: crate::types::Component,
+        compiled: bool,
         validated_volumes: &std::collections::HashMap<String, PathBuf>,
         loopback: Arc<std::sync::Mutex<loopback::Network>>,
     ) -> anyhow::Result<WorkloadComponent> {
@@ -755,9 +801,13 @@ impl Engine {
         let instances = InstancePolicy::from_component(&component);
 
         // Create a wasmtime component from the bytes
-        let wasmtime_component = self
-            .load_component_bytes(component.bytes, component.digest)
-            .context("failed to create component from bytes")?;
+        let wasmtime_component = if compiled {
+            self.load_compiled_component_bytes(component.bytes, component.digest)
+                .context("failed to create component from compiled bytes")?
+        } else {
+            self.load_component_bytes(component.bytes, component.digest)
+                .context("failed to create component from bytes")?
+        };
 
         // Create a linker for this component
         let mut linker: Linker<SharedCtx> = Linker::new(&self.inner);

@@ -65,6 +65,7 @@ async fn test_p3_http_handler_serves_request() -> Result<()> {
             name: "p3-http-handler".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-handler-p3.wasm".to_string(),
                 digest: None,
@@ -119,6 +120,7 @@ async fn test_p3_http_blobstore() -> Result<()> {
             name: "p3-http-blobstore".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-blobstore-p3.wasm".to_string(),
                 digest: None,
@@ -176,6 +178,7 @@ async fn test_p3_http_concurrent_requests() -> Result<()> {
             name: "p3-http-concurrent".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-handler-p3.wasm".to_string(),
                 digest: None,
@@ -249,6 +252,7 @@ async fn test_p3_service_runs() -> Result<()> {
                 local_resources: LocalResources::default(),
                 max_restarts: 0,
             }),
+            compiled_components: vec![],
             components: vec![],
             host_interfaces: vec![],
             volumes: vec![],
@@ -307,6 +311,7 @@ async fn test_p3_caller_p2_middleware_p2_callee() -> Result<()> {
             name: "p3-p2-p2-link".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "p3-caller".to_string(),
@@ -387,6 +392,7 @@ async fn test_p2_caller_p2_middleware_p3_callee() -> Result<()> {
             name: "p2-p2-p3-link".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "p2-caller".to_string(),
@@ -463,6 +469,7 @@ async fn test_p3_caller_p2_middleware_p3_callee() -> Result<()> {
             name: "p3-p2-p3-link".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "p3-caller".to_string(),
@@ -546,6 +553,7 @@ async fn test_all_p3_workload() -> Result<()> {
                 local_resources: LocalResources::default(),
                 max_restarts: 0,
             }),
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-blobstore-p3.wasm".to_string(),
                 digest: None,
@@ -600,6 +608,7 @@ async fn test_p2_regression_with_p3_enabled() -> Result<()> {
             name: "p2-regression".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-counter.wasm".to_string(),
                 digest: None,

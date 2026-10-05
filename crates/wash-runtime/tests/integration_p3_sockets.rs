@@ -80,6 +80,7 @@ async fn test_p3_socket_component_initialization() -> Result<()> {
         name: "p3-socket-init".to_string(),
         annotations: HashMap::new(),
         service: None,
+        compiled_components: vec![],
         components: vec![Component {
             name: "socket-test-p3.wasm".to_string(),
             digest: None,

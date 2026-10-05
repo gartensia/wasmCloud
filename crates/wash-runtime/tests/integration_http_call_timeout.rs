@@ -115,6 +115,7 @@ async fn a_wedged_pooled_instance_is_retired_and_replaced() -> Result<()> {
             name: "wedge-pooled".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "sleeper".to_string(),
                 digest: None,
@@ -168,6 +169,7 @@ async fn a_wedged_service_keeps_serving_with_a_bounded_wait() -> Result<()> {
                 local_resources: LocalResources::default(),
                 max_restarts: 0,
             }),
+            compiled_components: vec![],
             components: vec![],
             host_interfaces: http_only_host_interfaces("wedge-svc"),
             volumes: vec![],

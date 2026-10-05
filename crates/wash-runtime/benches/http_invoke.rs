@@ -78,6 +78,7 @@ async fn start_warm_host_with_pool(flavor: Flavor, pool_size: i32) -> anyhow::Re
             name: format!("bench-{}", flavor.name()),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: format!("hello-{}.wasm", flavor.name()),
                 digest: None,
@@ -339,6 +340,7 @@ async fn start_sleeper_host(
             name: host_header.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "sleeper".to_string(),
                 digest: None,

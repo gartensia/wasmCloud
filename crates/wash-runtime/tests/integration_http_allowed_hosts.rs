@@ -117,6 +117,7 @@ fn allowed_hosts_workload(allowed_hosts: Vec<String>) -> WorkloadStartRequest {
             name: "http-allowed-hosts".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-allowed-hosts.wasm".to_string(),
                 digest: None,

@@ -75,6 +75,7 @@ fn resolve_workload(
             name: host_header.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: format!("{host_header}.wasm"),
                 digest: None,

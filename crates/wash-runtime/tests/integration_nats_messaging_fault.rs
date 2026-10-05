@@ -218,6 +218,7 @@ async fn setup(latency: Duration) -> Result<TestHarness> {
             name: "messaging-fault".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "messaging-handler".to_string(),
                 digest: None,

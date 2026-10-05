@@ -92,6 +92,7 @@ async fn implements_imports_route_to_isolated_backends() -> Result<()> {
             name: "keyvalue-implements".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "keyvalue-implements.wasm".to_string(),
                 digest: None,

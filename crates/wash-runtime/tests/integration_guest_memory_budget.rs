@@ -86,6 +86,7 @@ fn grow_workload(name: &str) -> WorkloadStartRequest {
             name: name.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-memory-grow.wasm".to_string(),
                 digest: None,

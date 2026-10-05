@@ -123,6 +123,7 @@ fn http_workload(
             name: name.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: format!("{name}.wasm"),
                 digest: None,

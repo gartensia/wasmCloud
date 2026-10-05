@@ -81,6 +81,7 @@ async fn wasi_blobstore_handlers_emit_namespaced_spans() -> Result<()> {
             name: "span-name-workload".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-blobstore-component".to_string(),
                 digest: None,

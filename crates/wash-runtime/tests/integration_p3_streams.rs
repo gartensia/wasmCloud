@@ -59,6 +59,7 @@ async fn test_p3_cross_component_stream_to_http() -> Result<()> {
             name: "p3-cross-component-stream".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "stream-consumer".to_string(),
@@ -146,6 +147,7 @@ async fn test_p3_incoming_handler_streams_incrementally() -> Result<()> {
             name: "p3-stream-pacer".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "stream-pacer".to_string(),
                 digest: None,
@@ -235,6 +237,7 @@ async fn test_p3_cross_component_stream_streams_incrementally() -> Result<()> {
             name: "p3-cross-component-stream-paced".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "stream-consumer".to_string(),

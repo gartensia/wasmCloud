@@ -67,6 +67,7 @@ async fn a_disconnect_does_not_trap_a_healthy_guest_when_the_deadline_outlives_t
             namespace: "test".to_string(),
             name: "healthy".to_string(),
             annotations: HashMap::new(),
+            compiled_components: vec![],
             service: Some(Service {
                 digest: None,
                 bytes: bytes::Bytes::from_static(HTTP_SLEEPER_WASM),

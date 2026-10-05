@@ -25,5 +25,7 @@ examples/*/wit/deps/
 plugins/*/wit/deps/
 crates/wash-runtime/tests/fixtures/*/wit/deps/
 
+.direnv
+
 # Local WIT build output (root /wit/ publish workflow)
 /wit-build/

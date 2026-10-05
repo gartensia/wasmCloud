@@ -52,6 +52,7 @@ async fn test_cron_service_integration() -> Result<()> {
                 local_resources: Default::default(),
                 max_restarts: 0,
             }),
+            compiled_components: vec![],
             components: vec![Component {
                 name: "cron-component".to_string(),
                 digest: None,

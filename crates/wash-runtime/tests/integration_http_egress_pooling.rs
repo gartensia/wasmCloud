@@ -171,6 +171,7 @@ fn egress_workload_with(
             name: "http-egress-pool".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-egress-pool.wasm".to_string(),
                 digest: None,

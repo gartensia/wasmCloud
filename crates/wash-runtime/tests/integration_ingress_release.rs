@@ -131,6 +131,7 @@ async fn a_workload_with_an_ephemeral_linked_call_releases_its_ingress() -> Resu
                 name: "ingress-release-linked".to_string(),
                 annotations: HashMap::new(),
                 service: None,
+                compiled_components: vec![],
                 components: vec![
                     Component {
                         name: "ephemeral-caller".to_string(),

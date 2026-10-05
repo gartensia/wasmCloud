@@ -245,6 +245,7 @@ fn component_workload_with(
             name: workload_id.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "dispatch-target".to_string(),
                 digest: None,
@@ -289,6 +290,7 @@ fn service_workload_with(
                 },
                 max_restarts,
             }),
+            compiled_components: vec![],
             components: vec![],
             host_interfaces: vec![acme_tasks_interface()],
             volumes: vec![],

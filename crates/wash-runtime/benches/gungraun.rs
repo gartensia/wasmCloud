@@ -76,6 +76,7 @@ fn setup_warm(flavor: Flavor) -> Warm {
                 name: format!("bench-{}", flavor.name()),
                 annotations: HashMap::new(),
                 service: None,
+                compiled_components: vec![],
                 components: vec![Component {
                     name: format!("hello-{}.wasm", flavor.name()),
                     digest: None,

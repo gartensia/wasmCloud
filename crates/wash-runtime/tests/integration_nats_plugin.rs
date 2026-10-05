@@ -202,6 +202,7 @@ fn workload_request_with_limits(
             name: format!("nats-{workload_id}"),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "nats-handler".to_string(),
                 digest: None,
@@ -1093,6 +1094,7 @@ fn bridge_workload_request(
             name: format!("nats-{workload_id}"),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "nats-bridge".to_string(),
                 digest: None,

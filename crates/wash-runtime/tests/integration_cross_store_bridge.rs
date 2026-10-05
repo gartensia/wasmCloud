@@ -55,6 +55,7 @@ fn bridge_workload(host: &str) -> WorkloadStartRequest {
                 max_concurrency: 1,
                 ..Default::default()
             }],
+            compiled_components: vec![],
             host_interfaces: http_only_host_interfaces(host),
             volumes: vec![],
         },

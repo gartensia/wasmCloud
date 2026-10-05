@@ -2004,6 +2004,7 @@ mod tests {
                 components: vec![],
                 host_interfaces: vec![],
                 volumes: vec![],
+                compiled_components: vec![],
             },
         }
     }
@@ -2141,6 +2142,7 @@ mod tests {
                     name: "test".to_string(),
                     annotations: Default::default(),
                     service: None,
+                    compiled_components: vec![],
                     components: vec![Component {
                         name: "test".to_string(),
                         digest: None,
@@ -2179,6 +2181,7 @@ mod tests {
                     namespace: "wasmcloud".to_string(),
                     name: "bad-service-test".to_string(),
                     annotations: Default::default(),
+                    compiled_components: vec![],
                     service: Some(crate::types::Service {
                         bytes: vec![0xDE, 0xAD, 0xBE, 0xEF].into(),
                         digest: None,
@@ -2318,6 +2321,7 @@ mod tests {
                     max_restarts: 0,
                 }),
                 components: vec![],
+                compiled_components: vec![],
                 host_interfaces: marker_interfaces(),
                 volumes: vec![],
             },
@@ -2344,6 +2348,7 @@ mod tests {
                     max_concurrency: 1,
                     ..Default::default()
                 }],
+                compiled_components: vec![],
                 host_interfaces: marker_interfaces(),
                 volumes: vec![],
             },

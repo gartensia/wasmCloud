@@ -96,6 +96,7 @@ async fn standalone_and_multiplexed_keyvalue_coexist() -> Result<()> {
             name: "keyvalue-coexist".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "keyvalue-counter.wasm".to_string(),
                 digest: None,

@@ -197,6 +197,7 @@ async fn test_inter_component_call() -> Result<()> {
             name: "caller".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "caller".to_string(),

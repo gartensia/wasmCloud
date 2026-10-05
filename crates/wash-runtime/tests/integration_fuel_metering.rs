@@ -120,6 +120,7 @@ async fn a_fuel_metering_host_runs_guest_code() -> Result<()> {
                 local_resources: Default::default(),
                 max_restarts: 0,
             }),
+            compiled_components: vec![],
             components: vec![Component {
                 name: "cron-component".to_string(),
                 digest: None,

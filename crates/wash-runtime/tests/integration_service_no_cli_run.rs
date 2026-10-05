@@ -42,6 +42,7 @@ fn svc_no_run_request(host: &str) -> WorkloadStartRequest {
                 local_resources: LocalResources::default(),
                 max_restarts: 0,
             }),
+            compiled_components: vec![],
             components: vec![],
             host_interfaces: http_only_host_interfaces(host),
             volumes: vec![],

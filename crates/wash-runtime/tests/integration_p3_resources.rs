@@ -66,6 +66,7 @@ async fn test_p3_resource_handle_crosses_linker() -> Result<()> {
             name: "p3-resource-passing".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 component("res-caller", RES_CALLER_P3_WASM),
                 component("res-producer", RES_PRODUCER_P3_WASM),

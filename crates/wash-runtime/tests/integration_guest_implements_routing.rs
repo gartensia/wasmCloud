@@ -74,6 +74,7 @@ async fn labelled_imports_route_to_the_sibling_they_name() -> Result<()> {
             name: "feeds".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 // The component NAMES here are what the caller's `(implements ..)`
                 // labels name.

@@ -72,6 +72,7 @@ async fn start_pair_with_caller_pool(
             name: host_header.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "ephemeral-caller".to_string(),
@@ -162,6 +163,7 @@ async fn start_http_component_with(
             name: host_header.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-counter".to_string(),
                 digest: None,

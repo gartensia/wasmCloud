@@ -69,6 +69,7 @@ async fn test_http_webgpu_integration() -> Result<()> {
             name: "test-workload".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-webgpu-component".to_string(),
                 digest: None,

@@ -51,6 +51,7 @@ async fn test_p3_plain_value_async_call_uses_ephemeral_store() -> Result<()> {
             name: "p3-ephemeral".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "ephemeral-caller".to_string(),

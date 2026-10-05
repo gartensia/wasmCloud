@@ -63,6 +63,7 @@ async fn start_sleeper_with(
             name: host_header.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "sleeper".to_string(),
                 digest: None,
@@ -300,6 +301,7 @@ async fn linked_calls_share_the_warm_instances() -> Result<()> {
             name: "linked-conc".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "caller".to_string(),

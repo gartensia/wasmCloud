@@ -79,6 +79,7 @@ async fn setup() -> Result<TestHarness> {
             name: "nats-blobstore-workload".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-blobstore-component".to_string(),
                 digest: None,

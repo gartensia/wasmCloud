@@ -66,6 +66,7 @@ async fn test_http_blobstore_integration() -> Result<()> {
             name: "test-workload".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-blobstore-component".to_string(),
                 digest: None,

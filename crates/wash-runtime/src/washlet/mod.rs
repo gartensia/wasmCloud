@@ -1024,6 +1024,7 @@ async fn workload_start(
                 annotations,
                 service,
                 components,
+                compiled_components: vec![],
                 host_interfaces,
                 volumes,
             },

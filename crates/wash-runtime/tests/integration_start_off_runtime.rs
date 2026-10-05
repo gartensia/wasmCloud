@@ -54,6 +54,7 @@ async fn compiling_a_workload_leaves_the_runtime_free() -> Result<()> {
                 name: "compile-off-runtime".to_string(),
                 annotations: Default::default(),
                 service: None,
+                compiled_components: vec![],
                 components: vec![Component {
                     name: "compiled".to_string(),
                     bytes: COMPONENT_WASM.into(),

@@ -150,6 +150,7 @@ async fn implements_imports_route_to_per_credential_connections() -> Result<()> 
             name: "postgres-implements".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "postgres-implements.wasm".to_string(),
                 digest: None,

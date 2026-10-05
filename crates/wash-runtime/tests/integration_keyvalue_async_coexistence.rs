@@ -93,6 +93,7 @@ fn workload(
             name: name.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: component.to_string(),
                 digest: None,

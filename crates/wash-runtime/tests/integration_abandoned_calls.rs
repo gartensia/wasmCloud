@@ -171,6 +171,7 @@ async fn start_sleeper(host: &impl HostApi, name: &str, as_service: bool) -> Res
             annotations: HashMap::new(),
             service,
             components,
+            compiled_components: vec![],
             host_interfaces: http_only_host_interfaces(name),
             volumes: vec![],
         },
@@ -192,6 +193,7 @@ async fn start_linked(host: &impl HostApi, name: &str, callee_pool: i32) -> Resu
             name: name.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![
                 Component {
                     name: "ephemeral-caller".to_string(),
@@ -570,6 +572,7 @@ async fn an_abandoned_message_delivery_traps_and_restarts_the_service() -> Resul
                 local_resources: LocalResources::default(),
                 max_restarts: 2,
             }),
+            compiled_components: vec![],
             components: vec![],
             host_interfaces: vec![],
             volumes: vec![],
@@ -642,6 +645,7 @@ async fn a_chatty_messaging_handler_survives_being_abandoned() -> Result<()> {
             namespace: "test".to_string(),
             name: "msg-chatter".to_string(),
             annotations: HashMap::new(),
+            compiled_components: vec![],
             service: Some(Service {
                 digest: None,
                 bytes: bytes::Bytes::from_static(MSG_COUNTER_WASM),

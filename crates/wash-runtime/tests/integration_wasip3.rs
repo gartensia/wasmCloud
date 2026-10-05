@@ -126,6 +126,7 @@ async fn test_p2_http_component_works_with_p3_enabled() -> Result<()> {
             name: "p2-with-p3-enabled".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-counter.wasm".to_string(),
                 digest: None,
@@ -193,6 +194,7 @@ async fn test_p2_concurrent_requests_with_p3_enabled() -> Result<()> {
             name: "p2-concurrent-p3".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-counter.wasm".to_string(),
                 digest: None,
@@ -260,6 +262,7 @@ async fn test_p3_linker_accepts_p2_component() -> Result<()> {
         name: "p2-on-p3-linker".to_string(),
         annotations: HashMap::new(),
         service: None,
+        compiled_components: vec![],
         components: vec![Component {
             name: "http-counter.wasm".to_string(),
             digest: None,

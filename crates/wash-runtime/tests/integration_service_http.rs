@@ -52,6 +52,7 @@ fn svc_counter_request(host: &str, max_restarts: u64) -> WorkloadStartRequest {
                 max_restarts,
             }),
             components: vec![],
+            compiled_components: vec![],
             host_interfaces: http_only_host_interfaces(host),
             volumes: vec![],
         },

@@ -88,6 +88,7 @@ async fn run_with(
                 name: "multi-config".to_string(),
                 annotations: HashMap::new(),
                 service: None,
+                compiled_components: vec![],
                 components: vec![
                     component("caller", CALLER_WASM, &[("who", "caller")], warm),
                     component("callee", CALLEE_WASM, &[("who", "callee")], warm),

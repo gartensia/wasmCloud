@@ -132,6 +132,7 @@ async fn start_msg_sleeper(
             name: host_header.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "sleeper".to_string(),
                 digest: None,

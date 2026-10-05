@@ -801,6 +801,7 @@ fn build_workload(
         host_interfaces,
         service,
         volumes,
+        compiled_components: vec![],
     }
 }
 

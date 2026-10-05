@@ -82,6 +82,7 @@ async fn p3_guest_plain_keyvalue_uses_default_backend() -> Result<()> {
             name: "keyvalue-default-p3".to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "keyvalue-default-p3.wasm".to_string(),
                 digest: None,

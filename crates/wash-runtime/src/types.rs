@@ -32,6 +32,7 @@ pub struct Workload {
     pub annotations: HashMap<String, String>,
     pub service: Option<Service>,
     pub components: Vec<Component>,
+    pub compiled_components: Vec<Component>,
     pub host_interfaces: Vec<WitInterface>,
     pub volumes: Vec<Volume>,
 }

@@ -3,7 +3,7 @@
 //! expected per-target.
 #![allow(dead_code)]
 
-use std::{collections::HashMap, sync::Arc, time::Duration};
+use std::{collections::HashMap, sync::Arc, time::Duration, vec};
 
 use anyhow::Context as _;
 use wash_runtime::{
@@ -151,6 +151,7 @@ pub async fn start_backend_host(flavor: Flavor) -> anyhow::Result<BenchHost> {
         name: format!("backend-{}", flavor.name()),
         annotations: HashMap::new(),
         service: None,
+        compiled_components: vec![],
         components: vec![Component {
             name: format!("hello-{}.wasm", flavor.name()),
             digest: None,
@@ -185,6 +186,7 @@ pub async fn start_service_host() -> anyhow::Result<BenchHost> {
             },
             max_restarts: 0,
         }),
+        compiled_components: vec![],
         components: vec![],
         host_interfaces: http_host_interfaces(host),
         volumes: vec![],

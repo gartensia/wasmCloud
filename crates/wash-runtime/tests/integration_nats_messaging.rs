@@ -145,6 +145,7 @@ fn messaging_handler_workload(
             name: workload_name.unwrap_or_else(|| "unnamed".into()),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "messaging-handler".to_string(),
                 digest: None,

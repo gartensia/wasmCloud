@@ -90,6 +90,7 @@ mod test {
                 annotations: HashMap::new(),
                 service: None,
                 components: vec![],
+                compiled_components: vec![],
                 host_interfaces: vec![],
                 volumes: vec![],
             },

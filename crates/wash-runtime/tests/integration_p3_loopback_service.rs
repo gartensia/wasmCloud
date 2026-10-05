@@ -42,6 +42,7 @@ fn echo_workload(host: &str) -> WorkloadStartRequest {
                 local_resources: LocalResources::default(),
                 max_restarts: 0,
             }),
+            compiled_components: vec![],
             components: vec![Component {
                 name: "http-loopback-gateway".to_string(),
                 digest: None,

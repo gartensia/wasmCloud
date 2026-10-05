@@ -79,6 +79,7 @@ fn async_echo_request(workload_id: &str, host_header: &str, subject: &str) -> Wo
                 },
                 max_restarts: 0,
             }),
+            compiled_components: vec![],
             components: vec![],
             host_interfaces,
             volumes: vec![],
@@ -96,6 +97,7 @@ fn sync_echo_request(workload_id: &str, host_header: &str, subject: &str) -> Wor
             name: host_header.to_string(),
             annotations: HashMap::new(),
             service: None,
+            compiled_components: vec![],
             components: vec![Component {
                 name: "echo".to_string(),
                 digest: None,
