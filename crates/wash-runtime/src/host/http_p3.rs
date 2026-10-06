@@ -58,7 +58,7 @@ impl hyper::body::Body for ChannelBody {
 /// guest stays alive until the body has been fully drained, and a slow client
 /// applies backpressure to the guest rather than buffering the whole body in
 /// memory.
-pub(crate) async fn handle_component_request_p3(
+pub async fn handle_component_request_p3(
     mut warm: ComponentInstance,
     req: hyper::Request<WasiBody>,
     abandoned: std::sync::Arc<crate::engine::abandon::AbandonFlag>,

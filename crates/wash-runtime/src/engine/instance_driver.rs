@@ -59,7 +59,7 @@ use crate::host::trigger_service::HttpTask;
 /// A plain-value call from another component in the workload, routed to this
 /// one's instance. Handle-free by construction (that is what puts it on this
 /// path), so its arguments and results cross a channel as plain data.
-pub(crate) struct LinkedJob {
+pub struct LinkedJob {
     pub(crate) func_idx: ComponentExportIndex,
     pub(crate) params: Vec<Val>,
     pub(crate) results_len: usize,
@@ -77,7 +77,7 @@ pub(crate) struct LinkedJob {
 /// Work an instance can be given. Every shape runs as a concurrent task on the
 /// same instance, so a component reached several ways shares one warm set
 /// rather than keeping one per way in.
-pub(crate) enum InstanceJob {
+pub enum InstanceJob {
     /// An inbound HTTP request (`wasi:http/handler@0.3`). Boxed to keep the
     /// variants a similar size; a declined job carries the whole request back.
     Http(Box<ServiceHttpJob>),

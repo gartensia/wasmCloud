@@ -221,14 +221,14 @@ pub mod abandon;
 pub mod ctx;
 pub mod dispatch;
 pub mod guest_memory;
-pub(crate) mod instance_driver;
-pub(crate) mod instance_pool;
+pub mod instance_driver;
+pub mod instance_pool;
 pub use instance_pool::{InstancePolicy, ReclaimPolicy};
 pub mod host_memory;
-pub(crate) mod linked_call;
-pub(crate) mod store;
-mod value;
-mod volumes;
+pub mod linked_call;
+pub mod store;
+pub mod value;
+pub mod volumes;
 pub mod workload;
 
 /// How often the engine's epoch advances.
@@ -1349,7 +1349,7 @@ impl EngineBuilder {
         // work that never yields can still be ended. Every store must then set a
         // deadline of its own — see [`crate::engine::abandon::arm_epoch_deadline`],
         // which is what decides when one is acted on.
-        config.epoch_interruption(true);
+        config.epoch_interruption(false);
 
         // Unwind tables are wasmtime's own default, so this only carries an
         // explicit choice through. Windows refuses to drop them, so an "off"

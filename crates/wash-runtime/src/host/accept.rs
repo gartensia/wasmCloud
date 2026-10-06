@@ -91,7 +91,7 @@ fn concerns_the_process(e: &std::io::Error) -> bool {
 
 /// Tracks how fast an accept loop is failing, and how long it should wait.
 #[derive(Debug)]
-pub(crate) struct AcceptBackoff {
+pub struct AcceptBackoff {
     failures: u32,
     last_failure: Instant,
     retry_delay: Duration,
@@ -118,7 +118,7 @@ impl AcceptBackoff {
     ///
     /// Taking the delay before doubling it is what makes the first pause
     /// [`RETRY_MIN`] rather than twice it.
-    pub(crate) fn pause(&mut self) -> Option<Duration> {
+    pub fn pause(&mut self) -> Option<Duration> {
         if self.last_failure.elapsed() >= FAILURE_WINDOW {
             self.failures = 0;
             self.retry_delay = RETRY_MIN;
@@ -133,7 +133,7 @@ impl AcceptBackoff {
 
     /// Record one failed `accept`. `true` when the loop is failing fast enough
     /// that the condition is the process's own and worth an `error!`.
-    pub(crate) fn failed(&mut self, e: &std::io::Error) -> bool {
+    pub fn failed(&mut self, e: &std::io::Error) -> bool {
         if !concerns_the_process(e) {
             return false;
         }
@@ -143,7 +143,7 @@ impl AcceptBackoff {
     }
 
     /// How many failures have gone by without a quiet window, for the log line.
-    pub(crate) fn failures(&self) -> u32 {
+    pub fn failures(&self) -> u32 {
         self.failures
     }
 }

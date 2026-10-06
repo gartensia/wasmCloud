@@ -72,7 +72,7 @@ use crate::types::Component;
 /// component that left `pool_size` at zero — saying its state is ephemeral —
 /// would quietly acquire state that outlives a call, just because something
 /// else in the workload imports it.
-pub(crate) fn poolable(
+pub fn poolable(
     components: &BTreeMap<Arc<str>, WorkloadComponent>,
     component_id: &str,
     linked: &HashSet<Arc<str>>,
@@ -112,7 +112,7 @@ pub(crate) fn poolable(
 /// instance can already serve does not pay for a store it will not use, and a
 /// component that fails to instantiate reports that to the caller rather than
 /// only to the log.
-pub(crate) async fn offer_or_install<F, S>(
+pub async fn offer_or_install<F, S>(
     pool: &Arc<InstancePool>,
     pre: &wasmtime::component::InstancePre<SharedCtx>,
     job: InstanceJob,
@@ -134,7 +134,7 @@ where
 }
 
 /// What [`InstancePool::try_dispatch`] did with a call.
-pub(crate) enum Dispatch {
+pub enum Dispatch {
     /// A warm instance took it.
     Sent,
     /// Every warm instance is busy but the pool is under `pool_size`: build a
@@ -151,14 +151,14 @@ pub(crate) enum Dispatch {
 /// instantiating a second time. `None` when there is none to give back: the
 /// call was declined before one was built, or the driver it was parked on
 /// ended before it could take the call.
-pub(crate) struct Declined {
-    pub(crate) job: InstanceJob,
-    pub(crate) instance: Option<ComponentInstance>,
+pub struct Declined {
+    pub job: InstanceJob,
+    pub instance: Option<ComponentInstance>,
 }
 
 impl Declined {
     /// A declined call with no instance to give back.
-    pub(crate) fn without_instance(job: InstanceJob) -> Self {
+    pub fn without_instance(job: InstanceJob) -> Self {
         Self {
             job,
             instance: None,
@@ -181,9 +181,9 @@ impl Declined {
 /// either serves that one call and is dropped with it, or is handed to
 /// [`InstancePool::dispatch_on_new`] — to be kept warm, or to come back in a
 /// [`Declined`] and serve the call the pool would not take.
-pub(crate) struct ComponentInstance {
-    pub(crate) store: wasmtime::Store<SharedCtx>,
-    pub(crate) instance: Instance,
+pub struct ComponentInstance {
+    pub store: wasmtime::Store<SharedCtx>,
+    pub instance: Instance,
 }
 
 /// What a component asked for by way of instance reuse.
@@ -305,7 +305,7 @@ impl InstancePolicy {
 /// The warm instances of one component, shared by every clone of its
 /// [`crate::engine::workload::WorkloadComponent`] and therefore by every
 /// importer that calls into it.
-pub(crate) struct InstancePool {
+pub struct InstancePool {
     state: Mutex<PoolState>,
     policy: InstancePolicy,
     /// Starts the sweep with the pool's first instance. There is nothing to
@@ -334,7 +334,7 @@ struct PoolState {
 }
 
 impl InstancePool {
-    pub(crate) fn new(policy: InstancePolicy) -> Self {
+    pub fn new(policy: InstancePolicy) -> Self {
         Self {
             state: Mutex::new(PoolState {
                 drivers: Vec::new(),
@@ -371,7 +371,7 @@ impl InstancePool {
 
     /// Guest calls this component may have in flight at once. See
     /// [`InstancePolicy::call_concurrency`].
-    pub(crate) fn call_concurrency(&self) -> usize {
+    pub fn call_concurrency(&self) -> usize {
         self.policy.call_concurrency()
     }
 
@@ -407,7 +407,7 @@ impl InstancePool {
     /// as [`Dispatch::NeedsInstance`] rather than creating one itself — that
     /// keeps a request that a warm instance can already serve from paying for
     /// a store it will not use.
-    pub(crate) fn try_dispatch(&self, job: InstanceJob) -> Dispatch {
+    pub fn try_dispatch(&self, job: InstanceJob) -> Dispatch {
         let Some((pool_size, _, _)) = self.limits() else {
             return Dispatch::Saturated(job);
         };
@@ -466,7 +466,7 @@ impl InstancePool {
     /// A call the pool cannot take at all is the other case: there the
     /// instance comes back in the [`Declined`], and the caller runs the call
     /// on it rather than instantiating a second time for the same call.
-    pub(crate) fn dispatch_on_new(
+    pub fn dispatch_on_new(
         self: &Arc<Self>,
         instance: ComponentInstance,
         job: InstanceJob,
@@ -648,7 +648,7 @@ impl InstancePool {
     }
 
     /// Whether this component keeps instances warm at all.
-    pub(crate) fn warms_instances(&self) -> bool {
+    pub fn warms_instances(&self) -> bool {
         self.policy.keeps_instances_warm()
     }
 
@@ -656,7 +656,7 @@ impl InstancePool {
     /// own warm set (the `wasmcloud:nats` subscriber) but must honour the same
     /// declaration.
     #[cfg_attr(not(feature = "wasmcloud-nats"), allow(dead_code))]
-    pub(crate) fn policy(&self) -> InstancePolicy {
+    pub fn policy(&self) -> InstancePolicy {
         self.policy
     }
 
@@ -670,7 +670,7 @@ impl InstancePool {
     /// instance when this ran would otherwise park it a moment later, into a
     /// pool nothing empties again — and every path here is one the workload
     /// does not come back from, so a closed pool stays closed.
-    pub(crate) fn close(&self) {
+    pub fn close(&self) {
         let mut state = self.lock_state();
         state.closed = true;
         drop(std::mem::take(&mut state.drivers));

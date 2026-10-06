@@ -213,7 +213,7 @@ impl std::fmt::Display for ClientIdentity {
 
 impl ClientIdentity {
     /// Read the chain and key.
-    pub(crate) fn load(
+    pub fn load(
         &self,
     ) -> anyhow::Result<(Vec<CertificateDer<'static>>, PrivateKeyDer<'static>)> {
         let Self::CertificatePem {
@@ -355,7 +355,7 @@ impl ClientTlsOptions {
     ///
     /// Split out for the OTLP exporters, which trust a collector the same way
     /// but may also present a client certificate to it.
-    pub(crate) fn root_store(&self) -> anyhow::Result<rustls::RootCertStore> {
+    pub fn root_store(&self) -> anyhow::Result<rustls::RootCertStore> {
         crate::init_crypto();
         let mut roots = match self.roots {
             TrustRoots::WebpkiAndNative | TrustRoots::Webpki => rustls::RootCertStore {
@@ -459,7 +459,7 @@ fn is_resolver_error(err: &std::io::Error) -> bool {
 }
 
 /// Open an HTTP TCP connection and return guest-visible connection errors.
-pub(crate) async fn connect_http_tcp(
+pub async fn connect_http_tcp(
     authority: &str,
     connect_timeout: Duration,
 ) -> Result<TcpStream, HttpError> {
@@ -483,7 +483,7 @@ pub(crate) async fn connect_http_tcp(
 /// built from a shared base configuration would otherwise share one TLS
 /// session-ticket cache, letting an upstream server correlate two workloads
 /// via a resumed session, against this module's isolation promise.
-pub(crate) fn isolated_resumption(tls: &rustls::ClientConfig) -> rustls::ClientConfig {
+pub fn isolated_resumption(tls: &rustls::ClientConfig) -> rustls::ClientConfig {
     let mut config = tls.clone();
     config.resumption = rustls::client::Resumption::in_memory_sessions(256);
     config
@@ -491,7 +491,7 @@ pub(crate) fn isolated_resumption(tls: &rustls::ClientConfig) -> rustls::ClientC
 
 /// Run a TLS client handshake over an established TCP stream, using
 /// `authority`'s host portion as the SNI server name.
-pub(crate) async fn connect_http_tls(
+pub async fn connect_http_tls(
     tls: Arc<rustls::ClientConfig>,
     authority: &str,
     tcp_stream: TcpStream,
@@ -512,7 +512,7 @@ pub(crate) async fn connect_http_tls(
 /// The returned handle doubles as the request's [`RequestIoFuture`], so a
 /// connection failure is propagated to the guest via [`connection_error`]
 /// rather than dropped.
-pub(crate) fn spawn_conn_worker<F>(conn: F) -> AbortOnDropJoinHandle<Result<(), HttpError>>
+pub fn spawn_conn_worker<F>(conn: F) -> AbortOnDropJoinHandle<Result<(), HttpError>>
 where
     F: Future<Output = Result<(), hyper::Error>> + Send + 'static,
 {
@@ -522,7 +522,7 @@ where
 /// Translate an error from a hyper connection or response body, as wasmtime's
 /// `default_send_request` does: a timeout becomes `HttpResponseTimeout`, and
 /// anything else is left for wasmtime to classify.
-pub(crate) fn connection_error(err: hyper::Error) -> HttpError {
+pub fn connection_error(err: hyper::Error) -> HttpError {
     if err.is_timeout() {
         HttpError::HttpResponseTimeout
     } else {
@@ -532,7 +532,7 @@ pub(crate) fn connection_error(err: hyper::Error) -> HttpError {
 
 /// The authority (`host:port`) for a request, defaulting the port from the
 /// scheme like wasmtime's default transport does.
-pub(crate) fn request_authority<B>(request: &hyper::Request<B>, use_tls: bool) -> Option<String> {
+pub fn request_authority<B>(request: &hyper::Request<B>, use_tls: bool) -> Option<String> {
     let authority = request.uri().authority()?;
     Some(if authority.port().is_some() {
         authority.to_string()
@@ -545,7 +545,7 @@ pub(crate) fn request_authority<B>(request: &hyper::Request<B>, use_tls: bool) -
 /// Rewrite the request URI to origin form (path + query only). The scheme and
 /// authority belong on the wire only when addressing a proxy, and
 /// `SendRequest::send_request` does not strip them for us.
-pub(crate) fn to_origin_form<B>(request: &mut hyper::Request<B>) {
+pub fn to_origin_form<B>(request: &mut hyper::Request<B>) {
     if let Ok(uri) = hyper::Uri::builder()
         .path_and_query(
             request
@@ -640,14 +640,14 @@ async fn send_head(
 /// Which protocol a connector negotiates, over ALPN for HTTPS and by prior
 /// knowledge for cleartext.
 #[derive(Clone, Copy)]
-pub(crate) enum Alpn {
+pub enum Alpn {
     Http1,
     H2,
 }
 
 /// The HTTPS connector every outbound connection this host makes is built on.
 /// A plain `HttpConnector` with `nodelay`, wrapped so it also speaks TLS.
-pub(crate) fn https_connector(
+pub fn https_connector(
     tls: &rustls::ClientConfig,
     alpn: Alpn,
 ) -> hyper_rustls::HttpsConnector<HttpConnector> {
@@ -757,7 +757,7 @@ impl PooledClient {
     /// The returned future reports the request-body upload outcome to the
     /// guest: `Ok(())` once the body has been fully pulled, or the body's own
     /// error if producing it failed.
-    pub(crate) async fn send_request(
+    pub async fn send_request(
         &self,
         request: hyper::Request<WasiBody>,
         options: Option<RequestOptions>,
@@ -766,7 +766,7 @@ impl PooledClient {
     }
 
     /// Send a gRPC request through the HTTP/2 pool.
-    pub(crate) async fn send_grpc_request(
+    pub async fn send_grpc_request(
         &self,
         request: hyper::Request<WasiBody>,
         options: Option<RequestOptions>,
@@ -1245,7 +1245,7 @@ impl Connection for PermittedStream {
 /// would mean maintaining a hand-written clone of an upstream enum. The
 /// oneshot is the only reader that matters — [`PooledClient::send`] takes the
 /// error from it, whether the request failed before the head or after it.
-pub(crate) struct UploadProbe {
+pub struct UploadProbe {
     inner: WasiBody,
     done: Option<tokio::sync::oneshot::Sender<Result<(), HttpError>>>,
 }
@@ -1253,11 +1253,11 @@ pub(crate) struct UploadProbe {
 /// The outcome channel of an [`UploadProbe`], which a sender both reads
 /// directly — to prefer the guest's own body error over hyper's wrapper — and
 /// hands to the guest as its request-error future.
-pub(crate) type UploadOutcome = tokio::sync::oneshot::Receiver<Result<(), HttpError>>;
+pub type UploadOutcome = tokio::sync::oneshot::Receiver<Result<(), HttpError>>;
 
 impl UploadProbe {
     /// Wrap `inner`, returning the channel its upload outcome arrives on.
-    pub(crate) fn new(inner: WasiBody) -> (Self, UploadOutcome) {
+    pub fn new(inner: WasiBody) -> (Self, UploadOutcome) {
         let (done, outcome) = tokio::sync::oneshot::channel();
         (
             Self {
@@ -1272,7 +1272,7 @@ impl UploadProbe {
 /// The guest's request-error future for a body wrapped by [`UploadProbe`]. A
 /// body dropped before completing, e.g. by a server that responded without
 /// draining it, is not a guest-visible failure.
-pub(crate) fn upload_io(outcome: UploadOutcome) -> RequestIoFuture {
+pub fn upload_io(outcome: UploadOutcome) -> RequestIoFuture {
     Box::new(async move { outcome.await.unwrap_or(Ok(())) })
 }
 

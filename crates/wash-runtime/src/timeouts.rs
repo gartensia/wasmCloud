@@ -65,7 +65,7 @@ macro_rules! declare_timeouts {
     );* $(;)?) => {
         $(
             $(#[$attr])*
-            pub(crate) fn $name() -> Duration {
+            pub fn $name() -> Duration {
                 static VALUE: LazyLock<Duration> = LazyLock::new(|| env_secs($var, $default));
                 *VALUE
             }
@@ -141,7 +141,7 @@ declare_timeouts! {
 /// Raise it on a host loaded enough that a pinned guest's fires land further
 /// apart than the default, where the gaps read as pauses, execution never
 /// accumulates and a wedged store is never trapped.
-pub(crate) fn abandoned_call_pause_threshold() -> Duration {
+pub fn abandoned_call_pause_threshold() -> Duration {
     static VALUE: LazyLock<Duration> =
         LazyLock::new(|| env_millis("WASH_ABANDONED_CALL_PAUSE_THRESHOLD_MS", 3_000));
     *VALUE

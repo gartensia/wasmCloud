@@ -125,7 +125,7 @@ impl AbandonFlag {
     /// work it bounds and dropped when that work ends; detaching one per call
     /// accumulates a task and a timer entry per call on healthy traffic.
     #[must_use = "dropping the handle immediately cancels the timer; bind it to the work it bounds"]
-    pub(crate) fn arm_after(self: Arc<Self>, deadline: Duration) -> ArmTimer {
+    pub fn arm_after(self: Arc<Self>, deadline: Duration) -> ArmTimer {
         ArmTimer(tokio_util::task::AbortOnDropHandle::new(tokio::spawn(
             async move {
                 tokio::time::sleep(deadline).await;
@@ -143,7 +143,7 @@ impl AbandonFlag {
 }
 
 /// Cancels a pending [`AbandonFlag::arm_after`] timer when dropped.
-pub(crate) struct ArmTimer(#[expect(dead_code)] tokio_util::task::AbortOnDropHandle<()>);
+pub struct ArmTimer(#[expect(dead_code)] tokio_util::task::AbortOnDropHandle<()>);
 
 /// Run `call`, keeping it registered on its store's [`AbandonedCalls`] only
 /// while the epoch callback could usefully act on it.
@@ -483,7 +483,7 @@ impl Drop for AbandonedGuard {
 /// Drop-armed rather than only timeout-armed so that a dispatcher future
 /// cancelled outright — a client disconnect drops it without running any of
 /// its code — counts the same as its deadline passing.
-pub(crate) struct AbandonOnDrop {
+pub struct AbandonOnDrop {
     flag: Arc<AbandonFlag>,
     arm_on_drop: bool,
 }
@@ -497,7 +497,7 @@ impl AbandonOnDrop {
     }
 
     /// The reply arrived and is wanted; leave the call alone.
-    pub(crate) fn disarm(mut self) {
+    pub fn disarm(mut self) {
         self.arm_on_drop = false;
     }
 
@@ -526,7 +526,7 @@ impl Drop for AbandonOnDrop {
 /// *any* path — including an `await_reply` future cancelled before its first
 /// poll, after the job was already sent — abandons the call rather than
 /// leaving the store to serve it forever.
-pub(crate) struct DispatchedCall {
+pub struct DispatchedCall {
     watch: AbandonOnDrop,
     deadline: Duration,
     /// Names the ingress in the timeout log line.
@@ -534,7 +534,7 @@ pub(crate) struct DispatchedCall {
 }
 
 impl DispatchedCall {
-    pub(crate) fn new(what: &'static str, deadline: Duration) -> Self {
+    pub fn new(what: &'static str, deadline: Duration) -> Self {
         Self {
             watch: AbandonOnDrop::new(AbandonFlag::new()),
             deadline,
@@ -544,13 +544,13 @@ impl DispatchedCall {
 
     /// The flag to carry in the job; the store-side task registers it with
     /// [`AbandonedCalls::watch`] for the life of the call.
-    pub(crate) fn flag(&self) -> Arc<AbandonFlag> {
+    pub fn flag(&self) -> Arc<AbandonFlag> {
         self.watch.flag()
     }
 
     /// Await the call's reply, abandoning the call if the deadline passes or
     /// this future is dropped. `None` means no reply is coming.
-    pub(crate) async fn await_reply<F: Future>(self, reply: F) -> Option<F::Output> {
+    pub async fn await_reply<F: Future>(self, reply: F) -> Option<F::Output> {
         let (output, watch) = self.await_head(reply).await?;
         watch.disarm();
         Some(output)
@@ -566,7 +566,7 @@ impl DispatchedCall {
     /// has finished is exactly the point.
     #[cfg_attr(not(feature = "host-component-plugins"), allow(dead_code))]
     #[must_use = "hold the timer for the life of the call; dropping it cancels the arming"]
-    pub(crate) fn arm_on_timer(self) -> ArmTimer {
+    pub fn arm_on_timer(self) -> ArmTimer {
         let Self {
             watch, deadline, ..
         } = self;
@@ -581,7 +581,7 @@ impl DispatchedCall {
     /// after the reply arrives.
     ///
     /// [`await_reply`]: Self::await_reply
-    pub(crate) async fn await_head<F: Future>(
+    pub async fn await_head<F: Future>(
         self,
         reply: F,
     ) -> Option<(F::Output, AbandonOnDrop)> {

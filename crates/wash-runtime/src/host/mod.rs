@@ -59,7 +59,7 @@ use crate::plugin::{HostPlugin, WorkloadFailure, WorkloadFailureSink};
 use crate::types::*;
 use crate::wit::{WitInterface, WitWorld};
 
-pub(crate) mod accept;
+pub mod accept;
 pub mod allowed_loopback;
 pub mod declared_port;
 pub mod egress_policy;

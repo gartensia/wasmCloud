@@ -1922,7 +1922,7 @@ impl ResolvedWorkload {
     ///
     /// The outbound HTTP pool sizes itself off this: a component's concurrent
     /// outbound requests scale with the calls it runs at once.
-    pub(crate) async fn call_concurrency(&self, component_id: &str) -> usize {
+    pub async fn call_concurrency(&self, component_id: &str) -> usize {
         self.components
             .read()
             .await
@@ -2068,7 +2068,7 @@ impl ResolvedWorkload {
     /// All three under one read lock, so a dispatch takes none: what they answer
     /// is settled when the workload resolves (see
     /// [`WorkloadComponent::pre_instantiate_ref`] and [`instance_pool::poolable`]).
-    pub(crate) async fn component_dispatch(
+    pub async fn component_dispatch(
         &self,
         component_id: &str,
     ) -> anyhow::Result<(Arc<str>, InstancePre<SharedCtx>, Option<Arc<InstancePool>>)> {
@@ -2090,7 +2090,7 @@ impl ResolvedWorkload {
         Ok((Arc::clone(id), pre, pool))
     }
 
-    pub(crate) async fn instance_pool_for_component(
+    pub async fn instance_pool_for_component(
         &self,
         component_id: &str,
     ) -> Option<Arc<InstancePool>> {
