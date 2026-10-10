@@ -759,7 +759,7 @@ impl Engine {
 
                 let component = unsafe { Component::deserialize(&self.inner, bytes.as_ref()) }
                     .map_err(anyhow::Error::from)
-                    .context("failed to compile component from bytes")?;
+                    .context("failed to compile component from compiled bytes")?;
 
                 Ok(component)
             }
@@ -773,7 +773,7 @@ impl Engine {
                     .try_get_with(key, || unsafe {
                         Component::deserialize(inner, bytes_ref)
                             .map_err(anyhow::Error::from)
-                            .context("failed to compile component from bytes")
+                            .context("failed to compile component from compiled bytes")
                             .map(CacheValue)
                     })
                     .map_err(|e: Arc<anyhow::Error>| {
