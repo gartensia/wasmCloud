@@ -310,7 +310,7 @@ impl From<&HostWorkload> for WorkloadState {
 /// - Plugins that extend host functionality
 /// - System monitoring and resource tracking
 pub struct Host {
-    engine: Engine,
+    pub engine: Engine,
     /// Workloads mapped from ID to the workload and its current state
     workloads: Arc<RwLock<HashMap<String, HostWorkload>>>,
     /// Source of the [`Reservation`] a start or a teardown stamps on the slot it

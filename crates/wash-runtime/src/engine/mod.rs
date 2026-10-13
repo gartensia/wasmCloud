@@ -62,7 +62,7 @@ use wasmtime_wasi::WasiView;
 /// Add all WASI interfaces to the linker, using upstream for non-socket interfaces
 /// and our custom socket implementation (with loopback support) for socket interfaces.
 /// Both P2 and P3 bindings are registered.
-fn add_wasi_to_linker(linker: &mut Linker<SharedCtx>) -> anyhow::Result<()> {
+pub fn add_wasi_to_linker(linker: &mut Linker<SharedCtx>) -> anyhow::Result<()> {
     use wasmtime_wasi::p2::bindings::{cli, clocks, filesystem, random, sockets};
 
     // IO interfaces (error, poll, streams)
